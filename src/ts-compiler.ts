@@ -1,10 +1,10 @@
 import os from 'os';
 import {
   CompilerOptions,
-  Program,
-  Diagnostic,
   createProgram,
-  flattenDiagnosticMessageText
+  Diagnostic,
+  flattenDiagnosticMessageText,
+  Program
 } from 'typescript';
 
 export enum TsCompileStatus {
@@ -20,7 +20,7 @@ export interface TSCompilerResult {
 }
 
 export default class TsCompiler {
-  private compilerOptions: CompilerOptions;
+  private readonly compilerOptions: CompilerOptions;
 
   constructor(compilerOptions: CompilerOptions) {
     this.compilerOptions = compilerOptions;

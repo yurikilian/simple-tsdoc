@@ -1,10 +1,10 @@
 {
-    "configurations": [
-        {
-            "command": "npm test",
-            "name": "Run npm start",
-            "request": "launch",
-            "type": "node-terminal"
-        }
-    ]
+  "configurations": [
+    {
+      "command": "npm test",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
 }
