@@ -2,11 +2,11 @@ interface FunctionResponse {
   name: string;
 }
 
-function utilWithImplicitParameters({
-  name
-}: {
+interface FunctionInput {
   name: string;
-}): FunctionResponse {
+}
+
+function utilWithImplicitParameters({ name }: FunctionInput): FunctionResponse {
   console.log(`My name is ${name}`);
 
   return {

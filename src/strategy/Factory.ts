@@ -7,9 +7,8 @@ export default class Factory {
   private static strategies: Map<
     SyntaxKind,
     TypescriptNodeParsingStrategy
-  > = new Map()
-    .set(SyntaxKind.FunctionDeclaration, new FunctionParser())
-    .set(SyntaxKind.InterfaceDeclaration, new InterfaceParser());
+  > = new Map().set(SyntaxKind.FunctionDeclaration, new FunctionParser());
+  //  .set(SyntaxKind.InterfaceDeclaration, new InterfaceParser())
 
   public static get(
     kind: SyntaxKind

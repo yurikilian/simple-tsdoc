@@ -6,9 +6,7 @@ interface FunctionInput {
   name: string;
 }
 
-function utilCorrect(input: FunctionInput): FunctionResponse {
-  console.log(`My name is ${input.name}`);
-
+async function asyncHandler(input: FunctionInput): Promise<FunctionResponse> {
   return {
     name: 'ok'
   };

@@ -2,11 +2,7 @@ interface FunctionResponse {
   name: string;
 }
 
-interface FunctionInput {
-  name: string;
-}
-
-function utilCorrect(input: FunctionInput): FunctionResponse {
+function utilWrongBoth(input: { name: string }): FunctionResponse {
   console.log(`My name is ${input.name}`);
 
   return {

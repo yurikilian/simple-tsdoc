@@ -1,15 +1,19 @@
 import { TypescriptNodeParsingStrategy } from './TypescriptNodeParsingStrategy';
 import {
   FunctionDeclaration,
+  getLeadingCommentRanges,
   ParameterDeclaration,
   SyntaxKind,
   TypeReferenceType
 } from 'typescript';
 
+import { TextRange } from '@microsoft/tsdoc';
+
 export interface FunctionSkeleton {
   name: string;
-  parameters: Set<string>;
+  parameters: Map<string, string>;
   output: FunctionSkeletonOutput;
+  comments: TextRange[];
 }
 
 export interface FunctionSkeletonOutput {
@@ -19,7 +23,20 @@ export interface FunctionSkeletonOutput {
 
 export default class FunctionParser implements TypescriptNodeParsingStrategy {
   parse(node: FunctionDeclaration): FunctionSkeleton {
-    const parameters = new Set<string>();
+    const nodeText = node.getSourceFile().getText();
+
+    const tsComments = getLeadingCommentRanges(nodeText, node.pos) || [];
+
+    const comments = [];
+    if (tsComments.length > 0) {
+      for (const comment of tsComments) {
+        comments.push(
+          TextRange.fromStringRange(nodeText, comment.pos, comment.end)
+        );
+      }
+    }
+
+    const parameters = new Map<string, string>();
     const outputTypeArgs = new Set<string>();
 
     let outputName = null;
@@ -29,11 +46,20 @@ export default class FunctionParser implements TypescriptNodeParsingStrategy {
 
         const paramLeftSide = param.getChildAt(0);
         const paramRightSide = param.getChildAt(2);
-        console.log('Param Left side:', paramLeftSide.getText());
-        console.log('Param Right side:', paramRightSide.getText());
-        //TODO: handle left side and right side of the parameters
-        // only accept explicit types
-        parameters.add(paramLeftSide.getText());
+
+        if (paramLeftSide.kind !== SyntaxKind.Identifier) {
+          throw new Error(
+            'Not Implemented: parser does not support parameter destructuring yet'
+          );
+        }
+
+        if (paramRightSide.kind !== SyntaxKind.TypeReference) {
+          throw new Error(
+            'Not Implemented: function parameter type must be explicit'
+          );
+        }
+
+        parameters.set(paramLeftSide.getText(), paramRightSide.getText());
       } else if (child.kind === SyntaxKind.TypeReference) {
         const output = child as TypeReferenceType;
         output.forEachChild((outChild) => {
@@ -50,14 +76,15 @@ export default class FunctionParser implements TypescriptNodeParsingStrategy {
 
     if (!outputName) {
       throw new Error(
-        'Not Implemented: function with anonymous return types are not yet supported'
+        'Not Implemented: function with implicit return types are not yet supported'
       );
     }
 
     return {
       name: node?.name?.text || '',
       parameters: parameters,
-      output: { name: outputName, typeArgs: outputTypeArgs }
+      output: { name: outputName, typeArgs: outputTypeArgs },
+      comments: comments
     };
   }
 }
