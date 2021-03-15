@@ -1,5 +1,5 @@
 import { Node } from 'typescript';
 
-export interface TypescriptNodeParsingStrategy {
+export interface NodeParsingStrategy {
   parse(node: Node): any;
 }

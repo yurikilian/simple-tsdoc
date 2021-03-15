@@ -1,4 +1,4 @@
-import { TypescriptNodeParsingStrategy } from './TypescriptNodeParsingStrategy';
+import { NodeParsingStrategy } from './NodeParsingStrategy';
 import {
   FunctionDeclaration,
   getLeadingCommentRanges,
@@ -21,7 +21,7 @@ export interface FunctionSkeletonOutput {
   typeArgs: Set<string>;
 }
 
-export default class FunctionParser implements TypescriptNodeParsingStrategy {
+export default class FunctionParser implements NodeParsingStrategy {
   parse(node: FunctionDeclaration): FunctionSkeleton {
     const nodeText = node.getSourceFile().getText();
 

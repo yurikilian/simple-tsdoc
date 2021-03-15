@@ -6,7 +6,7 @@ import {
   SyntaxKind
 } from 'typescript';
 import TsProgram from '../../src/ts-compiler';
-import FunctionParser from '../../src/strategy/FunctionParser';
+import FunctionParser from '../../src/parser/FunctionParser';
 
 describe('Function Parser DOC Generator', () => {
   it('Should parse a pure function correctly', () => {

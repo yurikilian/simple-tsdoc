@@ -1,8 +1,6 @@
 import path from 'path';
-import { CompilerOptions, Node, ScriptTarget } from 'typescript';
+import { CompilerOptions, ScriptTarget } from 'typescript';
 import TsProgram, { TsCompileStatus } from '../src/ts-compiler';
-
-import Factory from '../src/strategy/Factory';
 
 describe('TSDoc parser tests', () => {
   it('Should create program and evaluate given input file', () => {
@@ -22,19 +20,6 @@ describe('TSDoc parser tests', () => {
     expect(info.program).toBeDefined();
 
     const rootSourceFile = info.program.getSourceFile(fileInput);
-
-    if (rootSourceFile) {
-      info.program
-        .getSourceFiles()
-        .filter((sourceFile) => !sourceFile.fileName.includes('node_modules'))
-        .forEach((rootSourceFile) => {
-          const root = rootSourceFile as Node;
-
-          root.forEachChild((child) => {
-            const artifact = Factory.get(child.kind)?.parse(child);
-            if (artifact) console.log(artifact);
-          });
-        });
-    }
+    expect(rootSourceFile).toBeDefined();
   });
 });

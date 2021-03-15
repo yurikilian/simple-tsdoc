@@ -1,8 +1,14 @@
 import path from 'path';
-import { CompilerOptions, Node, ScriptTarget } from 'typescript';
+import {
+  CompilerOptions,
+  FunctionDeclaration,
+  Node,
+  ScriptTarget,
+  SyntaxKind
+} from 'typescript';
 import TsProgram, { TsCompileStatus } from '../src/ts-compiler';
-import Factory from '../src/strategy/Factory';
 import { parse } from '../src/tsdoc-parser';
+import FunctionParser from '../src/parser/FunctionParser';
 
 describe('TSDOC Parser Test', function () {
   it('Should parse text ranges', () => {
@@ -31,19 +37,23 @@ describe('TSDOC Parser Test', function () {
           const root = rootSourceFile as Node;
 
           root.forEachChild((child) => {
-            const artifact = Factory.get(child.kind)?.parse(child);
-            if (artifact) {
-              for (const comment of artifact.comments) {
-                const parsedComment = parse(comment);
+            if (child.kind === SyntaxKind.FunctionDeclaration) {
+              const artifact = new FunctionParser().parse(
+                child as FunctionDeclaration
+              );
+              if (artifact) {
+                for (const comment of artifact.comments) {
+                  const parsedComment = parse(comment);
 
-                expect(parsedComment.summary).toBe('My lambda handler\n\n');
-                expect(parsedComment.remarks).toBe(
-                  '\nThis method handles the AWS lambda event received from a SQS\n\n'
-                );
-                expect(parsedComment.parameters.length).toBe(2);
-                expect(parsedComment.output).toBe(
-                  ' The lambda response having all events\n'
-                );
+                  expect(parsedComment.summary).toBe('My lambda handler\n\n');
+                  expect(parsedComment.remarks).toBe(
+                    '\nThis method handles the AWS lambda event received from a SQS\n\n'
+                  );
+                  expect(parsedComment.parameters.length).toBe(2);
+                  expect(parsedComment.output).toBe(
+                    ' The lambda response having all events\n'
+                  );
+                }
               }
             }
           });

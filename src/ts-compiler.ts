@@ -9,7 +9,6 @@ import {
 
 export enum TsCompileStatus {
   SUCCESS = 'success',
-  WARNING = 'warning',
   ERROR = 'error'
 }
 
