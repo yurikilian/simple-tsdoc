@@ -3,7 +3,7 @@ export default {
   testEnvironment: 'node',
   preset: 'ts-jest',
   collectCoverage: true,
-  collectCoverageFrom: ['**/*.ts'],
+  collectCoverageFrom: ['src/**/*.ts'],
   coveragePathIgnorePatterns: ['/node_modules/'],
   coverageDirectory: 'coverage',
   verbose: true
