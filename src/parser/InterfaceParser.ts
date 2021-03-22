@@ -4,10 +4,10 @@ import {
   SyntaxKind,
   TypeReferenceType
 } from 'typescript';
+import { Skeleton } from './Skeleton';
 
-interface InterfaceSkeleton {
+interface InterfaceSkeleton extends Skeleton {
   name: string;
-
   members: InterfaceSkeletonMember[];
 }
 
@@ -18,7 +18,7 @@ interface InterfaceSkeletonMember {
 }
 
 export default class InterfaceParser extends NodeParsingStrategy {
-  parse(node: InterfaceDeclaration): any {
+  parse(node: InterfaceDeclaration): InterfaceSkeleton {
     const members: Array<InterfaceSkeletonMember> = [];
     node.members.forEach((member) => {
       const paramLeftSide = member.getChildAt(0);

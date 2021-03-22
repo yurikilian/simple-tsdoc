@@ -1,4 +1,5 @@
 import { Node } from 'typescript';
+import { Skeleton } from './Skeleton';
 
 export abstract class DocumentationExtractor {
   abstract extract(node: Node): any;
@@ -11,5 +12,5 @@ export abstract class NodeParsingStrategy {
     this.documentationExtractor = documentationExtractor;
   }
 
-  abstract parse(node: Node): any;
+  abstract parse(node: Node): Skeleton;
 }

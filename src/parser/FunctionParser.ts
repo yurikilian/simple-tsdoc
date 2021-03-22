@@ -6,9 +6,9 @@ import {
   TypeReferenceType
 } from 'typescript';
 import { DocumentationSkeleton } from '../tsdoc-extractor';
+import { Skeleton } from './Skeleton';
 
-export interface FunctionSkeleton {
-  name: string;
+export interface FunctionSkeleton extends Skeleton {
   parameters: Map<string, string>;
   output: FunctionSkeletonOutput;
   documentation: DocumentationSkeleton[];

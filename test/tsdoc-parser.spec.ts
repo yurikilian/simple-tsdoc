@@ -3,6 +3,7 @@ import { CompilerOptions, Node, ScriptTarget } from 'typescript';
 import TsProgram, { TsCompileStatus } from '../src/ts-compiler';
 
 import Factory from '../src/parser/Factory';
+import { Skeleton } from '../src/parser/Skeleton';
 
 describe('Simple TSDoc Processor Tests', function () {
   it('Should parse all text ranges', () => {
@@ -22,7 +23,7 @@ describe('Simple TSDoc Processor Tests', function () {
     expect(info.program).toBeDefined();
 
     const rootSourceFile = info.program.getSourceFile(fileInput);
-    const documented: { [key: string]: Array<any> } = {
+    const documented: { [key: string]: Array<Skeleton> } = {
       function: [],
       interface: []
     };
