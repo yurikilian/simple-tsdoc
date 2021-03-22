@@ -1,18 +1,11 @@
 import path from 'path';
-import {
-  CompilerOptions,
-  FunctionDeclaration,
-  Node,
-  ScriptTarget,
-  SyntaxKind
-} from 'typescript';
+import { CompilerOptions, Node, ScriptTarget } from 'typescript';
 import TsProgram, { TsCompileStatus } from '../src/ts-compiler';
 
-import FunctionParser from '../src/parser/FunctionParser';
-import TsDocExtractor from '../src/tsdoc-extractor';
+import Factory from '../src/parser/Factory';
 
-describe('TSDOC Parser Test', function () {
-  it('Should parse text ranges', () => {
+describe('Simple TSDoc Processor Tests', function () {
+  it('Should parse all text ranges', () => {
     const fileInput: string = path.resolve(
       path.join(__dirname, 'fixture', 'project/src/index.ts')
     );
@@ -29,7 +22,10 @@ describe('TSDOC Parser Test', function () {
     expect(info.program).toBeDefined();
 
     const rootSourceFile = info.program.getSourceFile(fileInput);
-
+    const documented: { [key: string]: Array<any> } = {
+      function: [],
+      interface: []
+    };
     if (rootSourceFile) {
       info.program
         .getSourceFiles()
@@ -38,26 +34,14 @@ describe('TSDOC Parser Test', function () {
           const root = rootSourceFile as Node;
 
           root.forEachChild((child) => {
-            if (child.kind === SyntaxKind.FunctionDeclaration) {
-              const artifact = new FunctionParser(new TsDocExtractor()).parse(
-                child as FunctionDeclaration
-              );
-              if (artifact) {
-                for (const comment of artifact.documentation) {
-                  expect(comment.summary).toBe('My lambda handler\n\n');
-                  expect(comment.remarks).toBe(
-                    '\nThis method handles the AWS lambda event received from a SQS\n\n'
-                  );
-                  expect(comment.parameters.length).toBe(2);
-                  expect(comment.returns).toBe(
-                    ' The lambda response having all events\n'
-                  );
-                  console.info('Artifact:', artifact);
-                }
-              }
+            const parser = Factory.get(child.kind);
+            if (parser) {
+              documented[parser.name].push(parser.strategy.parse(child));
             }
           });
         });
     }
+
+    console.log('Documented artifacts: ', documented);
   });
 });

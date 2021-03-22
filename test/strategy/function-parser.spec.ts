@@ -1,5 +1,6 @@
 import path from 'path';
 import {
+  CompilerOptions,
   FunctionDeclaration,
   Node,
   ScriptTarget,
@@ -232,5 +233,49 @@ describe('Function Parser DOC Generator', () => {
           }
         });
       });
+  });
+
+  it('Should parse function text from the project', () => {
+    const fileInput: string = path.resolve(
+      path.join(__dirname, '../fixture', 'project/src/index.ts')
+    );
+
+    const compilerOptions: CompilerOptions = {
+      target: ScriptTarget.ES5
+    };
+    const tsProgram = new TsProgram(compilerOptions);
+    const info = tsProgram.compile([fileInput]);
+
+    const rootSourceFile = info.program.getSourceFile(fileInput);
+
+    if (rootSourceFile) {
+      info.program
+        .getSourceFiles()
+        .filter((sourceFile) => !sourceFile.fileName.includes('node_modules'))
+        .forEach((rootSourceFile) => {
+          const root = rootSourceFile as Node;
+
+          root.forEachChild((child) => {
+            if (child.kind === SyntaxKind.FunctionDeclaration) {
+              const artifact = new FunctionParser(new TsDocExtractor()).parse(
+                child as FunctionDeclaration
+              );
+              if (artifact) {
+                for (const comment of artifact.documentation) {
+                  expect(comment.summary).toBe('My lambda handler\n\n');
+                  expect(comment.remarks).toBe(
+                    '\nThis method handles the AWS lambda event received from a SQS\n\n'
+                  );
+                  expect(comment.parameters.length).toBe(2);
+                  expect(comment.returns).toBe(
+                    ' The lambda response having all events\n'
+                  );
+                  console.info('Artifact:', artifact);
+                }
+              }
+            }
+          });
+        });
+    }
   });
 });

@@ -49,6 +49,9 @@ export default class InterfaceParser extends NodeParsingStrategy {
       }
     });
 
-    return members;
+    return {
+      name: node.name.getText(),
+      members
+    };
   }
 }
