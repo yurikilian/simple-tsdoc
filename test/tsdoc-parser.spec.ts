@@ -7,8 +7,9 @@ import {
   SyntaxKind
 } from 'typescript';
 import TsProgram, { TsCompileStatus } from '../src/ts-compiler';
-import { parse } from '../src/tsdoc-parser';
+
 import FunctionParser from '../src/parser/FunctionParser';
+import TsDocExtractor from '../src/tsdoc-extractor';
 
 describe('TSDOC Parser Test', function () {
   it('Should parse text ranges', () => {
@@ -38,21 +39,20 @@ describe('TSDOC Parser Test', function () {
 
           root.forEachChild((child) => {
             if (child.kind === SyntaxKind.FunctionDeclaration) {
-              const artifact = new FunctionParser().parse(
+              const artifact = new FunctionParser(new TsDocExtractor()).parse(
                 child as FunctionDeclaration
               );
               if (artifact) {
-                for (const comment of artifact.comments) {
-                  const parsedComment = parse(comment);
-
-                  expect(parsedComment.summary).toBe('My lambda handler\n\n');
-                  expect(parsedComment.remarks).toBe(
+                for (const comment of artifact.documentation) {
+                  expect(comment.summary).toBe('My lambda handler\n\n');
+                  expect(comment.remarks).toBe(
                     '\nThis method handles the AWS lambda event received from a SQS\n\n'
                   );
-                  expect(parsedComment.parameters.length).toBe(2);
-                  expect(parsedComment.output).toBe(
+                  expect(comment.parameters.length).toBe(2);
+                  expect(comment.returns).toBe(
                     ' The lambda response having all events\n'
                   );
+                  console.info('Artifact:', artifact);
                 }
               }
             }

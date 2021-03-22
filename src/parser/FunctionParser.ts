@@ -1,19 +1,17 @@
 import { NodeParsingStrategy } from './NodeParsingStrategy';
 import {
   FunctionDeclaration,
-  getLeadingCommentRanges,
   ParameterDeclaration,
   SyntaxKind,
   TypeReferenceType
 } from 'typescript';
-
-import { TextRange } from '@microsoft/tsdoc';
+import { DocumentationSkeleton } from '../tsdoc-extractor';
 
 export interface FunctionSkeleton {
   name: string;
   parameters: Map<string, string>;
   output: FunctionSkeletonOutput;
-  comments: TextRange[];
+  documentation: DocumentationSkeleton[];
 }
 
 export interface FunctionSkeletonOutput {
@@ -21,21 +19,8 @@ export interface FunctionSkeletonOutput {
   typeArgs: Set<string>;
 }
 
-export default class FunctionParser implements NodeParsingStrategy {
+export default class FunctionParser extends NodeParsingStrategy {
   parse(node: FunctionDeclaration): FunctionSkeleton {
-    const nodeText = node.getSourceFile().getText();
-
-    const tsComments = getLeadingCommentRanges(nodeText, node.pos) || [];
-
-    const comments = [];
-    if (tsComments.length > 0) {
-      for (const comment of tsComments) {
-        comments.push(
-          TextRange.fromStringRange(nodeText, comment.pos, comment.end)
-        );
-      }
-    }
-
     const parameters = new Map<string, string>();
     const outputTypeArgs = new Set<string>();
 
@@ -84,7 +69,7 @@ export default class FunctionParser implements NodeParsingStrategy {
       name: node?.name?.text || '',
       parameters: parameters,
       output: { name: outputName, typeArgs: outputTypeArgs },
-      comments: comments
+      documentation: this.documentationExtractor.extract(node)
     };
   }
 }

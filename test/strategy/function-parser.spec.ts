@@ -7,6 +7,7 @@ import {
 } from 'typescript';
 import TsProgram from '../../src/ts-compiler';
 import FunctionParser from '../../src/parser/FunctionParser';
+import TsDocExtractor from '../../src/tsdoc-extractor';
 
 describe('Function Parser DOC Generator', () => {
   it('Should parse a pure function correctly', () => {
@@ -26,7 +27,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -60,7 +61,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -75,7 +76,7 @@ describe('Function Parser DOC Generator', () => {
             expect(
               functionSkeleton.output.typeArgs.has('FunctionResponse')
             ).toBe(true);
-            console.log('Function Skeleton: ', functionSkeleton);
+            console.info('Function Skeleton: ', functionSkeleton);
           }
         });
       });
@@ -98,7 +99,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -138,7 +139,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
             try {
               parser.parse(child as FunctionDeclaration);
               fail('should give error');
@@ -177,7 +178,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
 
             try {
               parser.parse(child as FunctionDeclaration);
@@ -217,7 +218,7 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser();
+            const parser = new FunctionParser(new TsDocExtractor());
 
             try {
               parser.parse(child as FunctionDeclaration);
