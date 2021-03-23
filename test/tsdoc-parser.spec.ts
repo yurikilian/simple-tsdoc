@@ -24,8 +24,8 @@ describe('Simple TSDoc Processor Tests', function () {
 
     const rootSourceFile = info.program.getSourceFile(fileInput);
     const documented: { [key: string]: Array<Skeleton> } = {
-      function: [],
-      interface: []
+      functions: [],
+      interfaces: []
     };
     if (rootSourceFile) {
       info.program

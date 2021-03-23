@@ -1,21 +1,21 @@
 import { SyntaxKind } from 'typescript';
 import FunctionParser from './FunctionParser';
 import { NodeParsingStrategy } from './NodeParsingStrategy';
-import TsDocExtractor from '../tsdoc-extractor';
+import AwsLambdaDocumentationExtractor from '../aws-lambda-documentation-extractor';
 import InterfaceParser from './InterfaceParser';
 
-const extractor = new TsDocExtractor();
+const extractor = new AwsLambdaDocumentationExtractor();
 export default class Factory {
   private static strategies: Map<
     SyntaxKind,
     { name: string; strategy: NodeParsingStrategy }
   > = new Map()
     .set(SyntaxKind.FunctionDeclaration, {
-      name: 'function',
+      name: 'functions',
       strategy: new FunctionParser(extractor)
     })
     .set(SyntaxKind.InterfaceDeclaration, {
-      name: 'interface',
+      name: 'interfaces',
       strategy: new InterfaceParser(extractor)
     });
 

@@ -8,7 +8,7 @@ import {
 } from 'typescript';
 import TsProgram from '../../src/ts-compiler';
 import FunctionParser from '../../src/parser/FunctionParser';
-import TsDocExtractor from '../../src/tsdoc-extractor';
+import AwsLambdaDocumentationExtractor from '../../src/aws-lambda-documentation-extractor';
 
 describe('Function Parser DOC Generator', () => {
   it('Should parse a pure function correctly', () => {
@@ -28,7 +28,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -62,7 +64,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -100,7 +104,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
 
             const functionSkeleton = parser.parse(child as FunctionDeclaration);
             expect(functionSkeleton.parameters.size).toBe(1);
@@ -140,7 +146,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
             try {
               parser.parse(child as FunctionDeclaration);
               fail('should give error');
@@ -179,7 +187,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
 
             try {
               parser.parse(child as FunctionDeclaration);
@@ -219,7 +229,9 @@ describe('Function Parser DOC Generator', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.FunctionDeclaration) {
-            const parser = new FunctionParser(new TsDocExtractor());
+            const parser = new FunctionParser(
+              new AwsLambdaDocumentationExtractor()
+            );
 
             try {
               parser.parse(child as FunctionDeclaration);
@@ -257,9 +269,9 @@ describe('Function Parser DOC Generator', () => {
 
           root.forEachChild((child) => {
             if (child.kind === SyntaxKind.FunctionDeclaration) {
-              const artifact = new FunctionParser(new TsDocExtractor()).parse(
-                child as FunctionDeclaration
-              );
+              const artifact = new FunctionParser(
+                new AwsLambdaDocumentationExtractor()
+              ).parse(child as FunctionDeclaration);
               if (artifact) {
                 for (const comment of artifact.documentation) {
                   expect(comment.summary).toBe('My lambda handler\n\n');

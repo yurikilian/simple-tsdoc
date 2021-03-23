@@ -7,7 +7,7 @@ import {
 } from 'typescript';
 import TsProgram from '../../src/ts-compiler';
 import InterfaceParser from '../../src/parser/InterfaceParser';
-import TsDocExtractor from '../../src/tsdoc-extractor';
+import AwsLambdaDocumentationExtractor from '../../src/aws-lambda-documentation-extractor';
 
 describe('Interface Parser Test', () => {
   it('Should parse an interface correctly', () => {
@@ -27,7 +27,9 @@ describe('Interface Parser Test', () => {
 
         root.forEachChild((child) => {
           if (child.kind === SyntaxKind.InterfaceDeclaration) {
-            const parser = new InterfaceParser(new TsDocExtractor());
+            const parser = new InterfaceParser(
+              new AwsLambdaDocumentationExtractor()
+            );
             const interfaceSkeleton = parser.parse(
               child as InterfaceDeclaration
             );

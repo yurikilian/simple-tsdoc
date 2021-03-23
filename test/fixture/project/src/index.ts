@@ -14,6 +14,8 @@ interface LambdaContext {
  * @param event - The lambda input
  * @param context - The execution context from lambda
  * @returns The lambda response having all events
+ *
+ * @LambdaFunction
  */
 export async function handler(
   event: LambdaEvent,

@@ -5,13 +5,13 @@ import {
   SyntaxKind,
   TypeReferenceType
 } from 'typescript';
-import { DocumentationSkeleton } from '../tsdoc-extractor';
+import { DocumentationSkeleton } from '../aws-lambda-documentation-extractor';
 import { Skeleton } from './Skeleton';
 
 export interface FunctionSkeleton extends Skeleton {
-  parameters: Map<string, string>;
+  parameters: Map<string, { type: string; typeArgs?: string }>;
   output: FunctionSkeletonOutput;
-  documentation: DocumentationSkeleton[];
+  documentation: DocumentationSkeleton;
 }
 
 export interface FunctionSkeletonOutput {
@@ -21,7 +21,7 @@ export interface FunctionSkeletonOutput {
 
 export default class FunctionParser extends NodeParsingStrategy {
   parse(node: FunctionDeclaration): FunctionSkeleton {
-    const parameters = new Map<string, string>();
+    const parameters = new Map<string, { type: string; typeArgs?: string }>();
     const outputTypeArgs = new Set<string>();
 
     let outputName = null;
@@ -44,7 +44,16 @@ export default class FunctionParser extends NodeParsingStrategy {
           );
         }
 
-        parameters.set(paramLeftSide.getText(), paramRightSide.getText());
+        const rightSide = paramRightSide as TypeReferenceType;
+        const typeArgs: Array<string> = [];
+        rightSide.typeArguments?.forEach((arg) => {
+          typeArgs.push(arg.getText());
+        });
+
+        parameters.set(paramLeftSide.getText(), {
+          type: paramRightSide.getText(),
+          typeArgs: typeArgs.join(',')
+        });
       } else if (child.kind === SyntaxKind.TypeReference) {
         const output = child as TypeReferenceType;
         output.forEachChild((outChild) => {

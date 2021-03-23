@@ -6,12 +6,12 @@ import {
 } from 'typescript';
 import { Skeleton } from './Skeleton';
 
-interface InterfaceSkeleton extends Skeleton {
+export interface InterfaceSkeleton extends Skeleton {
   name: string;
   members: InterfaceSkeletonMember[];
 }
 
-interface InterfaceSkeletonMember {
+export interface InterfaceSkeletonMember {
   name: string;
   type: string;
   typeArguments?: string;
@@ -39,6 +39,11 @@ export default class InterfaceParser extends NodeParsingStrategy {
             name: paramLeftSide.getText(),
             type: paramRightSide.getFirstToken()?.getText() || '',
             typeArguments: typeArguments.join(',')
+          });
+        } else {
+          members.push({
+            name: paramLeftSide.getText(),
+            type: typeReference.getText()
           });
         }
       } else {

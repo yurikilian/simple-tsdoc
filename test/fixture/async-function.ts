@@ -17,6 +17,7 @@ interface FunctionInput {
  * @param input - the function input
  * @returns A Promise with the Function Response
  *
+ * @LambdaFunction
  */
 async function asyncHandler(input: FunctionInput): Promise<FunctionResponse> {
   console.log(input);
